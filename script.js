@@ -171,3 +171,56 @@ dataSource.forEach(d=>{
 		});
 	});
 });
+
+// Populate the leaderboard
+// scores based on two-week average
+
+// Make a new dataset of only the last two weeks
+let newDataset = [];
+newDataset.push(dataSource.pop());
+newDataset.push(dataSource.pop());
+
+// Flatten the structure, we don't care about time
+let recentScores = [];
+newDataset.forEach(d=>{
+	d.games.forEach(g=>{
+		g.scores.forEach(s=>{recentScores.push(s)});
+	});
+});
+
+// get the names of these players
+let topPlayers = [...new Set(recentScores.map(s=>s.name))];
+
+let topScores = [];
+
+// For each top player, calculate their average.
+topPlayers.forEach(name=>{
+	let theirScores = recentScores.filter(s=>s.name===name).map(s=>s.score);
+	let sum = theirScores.reduce((a,i)=>a+=i, 0);
+	let avg = sum/theirScores.length;
+	topScores.push({
+		name,
+		score: avg
+	});
+})
+
+// Sort the top scores, best first.
+topScores.sort((a,b)=>{
+	return b.score-a.score;
+});
+
+// Put them in the leaderboard table
+let leaderboard = document.getElementById('leaderboard');
+topScores.forEach((s,i)=>{
+	let row = document.createElement('tr');
+	let rank = document.createElement('td');
+	rank.appendChild(document.createTextNode(i+1));
+	let player = document.createElement('td');
+	player.appendChild(document.createTextNode(s.name));
+	let avg = document.createElement('td');
+	avg.appendChild(document.createTextNode(s.score.toFixed(2)));
+	row.appendChild(rank);
+	row.appendChild(player);
+	row.appendChild(avg);
+	leaderboard.appendChild(row);
+});

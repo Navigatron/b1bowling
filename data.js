@@ -8,7 +8,7 @@ let dataset = [
 				game: 1,
 				scores: [
 					{
-						name: "Ethan",
+						name: "EthanW",
 						score: 123
 					},
 					{
@@ -33,7 +33,7 @@ let dataset = [
 				game: 2,
 				scores: [
 					{
-						name: "Ethan",
+						name: "EthanW",
 						score: 109
 					},
 					{
@@ -79,7 +79,7 @@ let dataset = [
 						score: 96
 					},
 					{
-						name: "Ethan",
+						name: "EthanW",
 						score: 103
 					},
 					{
@@ -112,7 +112,7 @@ let dataset = [
 						score: 84
 					},
 					{
-						name: "Ethan",
+						name: "EthanW",
 						score: 78
 					},
 					{
@@ -152,7 +152,7 @@ let dataset = [
 						commet: "Gutterball, pin 1 down, split"
 					},
 					{
-						name: "Ethan",
+						name: "EthanW",
 						score: 123
 					},
 					{
@@ -182,7 +182,7 @@ let dataset = [
 						score: 87
 					},
 					{
-						name: "Ethan",
+						name: "EthanW",
 						score: 119
 					},
 					{
@@ -199,6 +199,157 @@ let dataset = [
 					},
 				]
 			}
+		]
+	},
+	{
+		date: "2019-12-08",
+		games: [
+			{
+				game: 1,
+				scores: [
+					{
+						name: "Will",
+						score: 96
+					},
+					{
+						name: "Nick",
+						score: 127
+					},
+					{
+						name: "Adam",
+						score: 95
+					},
+					{
+						name: "Durrell",
+						score: 119
+					},
+					{
+						name: "Drake",
+						score: 153
+					},
+					{
+						name: "Ka",
+						score: 95
+					},
+					{
+						name: "EthanL",
+						score: 153
+					},
+					{
+						name: "Owen",
+						score: 116
+					},
+					{
+						name: "Jackson",
+						score: 86
+					},
+					{
+						name: "Garrett",
+						score: 91
+					},
+					{
+						name: "SauceTray",
+						score: 117
+					},
+					{
+						name: "EthanU",
+						score: 132
+					},
+					{
+						name: "Mike",
+						score: 66
+					},
+					{
+						name: "EthanW",
+						score: 125
+					},
+					{
+						name: "Matt",
+						score: 69
+					},
+					{
+						name: "Joey",
+						score: 70
+					},
+					{
+						name: "Zack",
+						score: 101
+					},
+				]
+			},
+			{
+				game: 2,
+				scores: [
+					{
+						name: "Will",
+						score: 89
+					},
+					{
+						name: "Nick",
+						score: 115
+					},
+					{
+						name: "Adam",
+						score: 126
+					},
+					{
+						name: "Durrell",
+						score: 122
+					},
+					{
+						name: "Drake",
+						score: 94
+					},
+					{
+						name: "Ka",
+						score: 125
+					},
+					{
+						name: "EthanL",
+						score: 120
+					},
+					{
+						name: "Owen",
+						score: 111
+					},
+					{
+						name: "Jackson",
+						score: 139
+					},
+					{
+						name: "Garrett",
+						score: 115
+					},
+					{
+						name: "SauceTray",
+						score: 118
+					},
+					{
+						name: "EthanU",
+						score: 117
+					},
+					{
+						name: "Mike",
+						score: 73
+					},
+					{
+						name: "EthanW",
+						score: 110
+					},
+					{
+						name: "Matt",
+						score: 101
+					},
+					{
+						name: "Joey",
+						score: 84
+					},
+					{
+						name: "Zack",
+						score: 104
+					},
+				]
+			},
 		]
 	}
 ];

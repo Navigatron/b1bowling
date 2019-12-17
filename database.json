@@ -616,5 +616,41 @@
         "game": 2,
         "player": "Durrell",
         "score": 104
+    },
+    {
+        "date": "2019-12-16",
+        "game": 1,
+        "player": "EthanW",
+        "score": 99
+    },
+    {
+        "date": "2019-12-16",
+        "game": 1,
+        "player": "Mike",
+        "score": 85
+    },
+    {
+        "date": "2019-12-16",
+        "game": 1,
+        "player": "Ka",
+        "score": 159
+    },
+    {
+        "date": "2019-12-16",
+        "game": 2,
+        "player": "EthanW",
+        "score": 154
+    },
+    {
+        "date": "2019-12-16",
+        "game": 2,
+        "player": "Mike",
+        "score": 122
+    },
+    {
+        "date": "2019-12-16",
+        "game": 2,
+        "player": "Ka",
+        "score": 118
     }
 ]

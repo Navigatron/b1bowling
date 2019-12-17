@@ -178,32 +178,25 @@ const makeLeaderboardTable = (players, database)=>{
 	players.forEach(player=>{
 		let row = {};
 		row.name = player;
-
-		let TwoWeekScores = database
-			.filter(s=>new Date(s.date)>=twoWeeksAgo)
-			.filter(s=>s.player===player);
-		if(TwoWeekScores.length===0){
+		let playerScores = database.filter(s=>s.player===player);
+		let twoWeekScores = playerScores.filter(s=>new Date(s.date)>=twoWeeksAgo);
+		if(twoWeekScores.length===0){
 			return; // exclude from leaderboard
 		}
 		// 2wk avg
-		row.avg2wk = database
-			.filter(s=>new Date(s.date)>=twoWeeksAgo)
-			.filter(s=>s.player===player)
+		row.avg2wk = twoWeekScores
 			.map(s=>s.score)
 			.reduce((a,i, _, s)=>a+i/s.length, 0);
 		// all time avg
-		row.avgAll = database
-			.filter(s=>s.player===player)
+		row.avgAll = playerScores
 			.map(s=>s.score)
 			.reduce((a,i, _, s)=>a+=i/s.length, 0);
 		// max
-		row.max = database
-			.filter(s=>s.player===player)
+		row.max = playerScores
 			.map(s=>s.score)
 			.reduce((a,i)=>a>i?a:i, 0);
 		// min
-		row.min = database
-			.filter(s=>s.player===player)
+		row.min = playerScores
 			.map(s=>s.score)
 			.reduce((a,i)=>a<i?a:i, 300);
 		rows.push(row);
@@ -227,7 +220,7 @@ const makeLeaderboardTable = (players, database)=>{
 	});
 	// Put a plus on positive trends
 	rows.forEach(row=>{
-		if(row.Delta>0){
+		if(row.Delta>=0){
 			row.Delta = "+"+row.Delta;
 		}
 	})

@@ -21,17 +21,29 @@ const getDatabase = async () => {
 	return response.json();
 };
 
-// Given the entire database, map it to a list of unique games.
+
+/*
+name: calcGamesList
+desc: Makes a list of unique games
+takes: the database
+returns:
+[
+	{
+		date: 'YYYY-MM-DD' (Local Time),
+		game: X
+	}
+]
+*/
 const calcGamesList = database => {
 	// store deduped game info here
 	let games = [];
 
 	// convert to just game info
 	// add to results if unique
-	database.map(score=>{
+	database.map(record=>{
 		return {
-			date: score.date, // what the actual fuck is happening on this line
-			game: score.game
+			date: record.displayDate,
+			game: record.game
 		};
 	}).forEach(possibleGame=>{
 		// only add if doesn't exist
@@ -47,6 +59,7 @@ const calcGamesList = database => {
 };
 
 // Take a list of games {date, game} and sort it.
+// TODO - database dates are in UTC, but, that shouldn't change the order I guess
 const sortGamesList = games => {
 	return games.sort((g1,g2)=>{
 		let d1 = new Date(g1.date);
@@ -95,37 +108,38 @@ function HSVtoRGB(h, s, v) {
 
 // Take info and make the graph
 const makeGraph = (players, games, database)=>{
-	// we need like, a dataset var???
+	// To make a graph, we need datasets.
 	// datasets: lines
-	// lines: {label, data, borderColor, fill, spanGaps}
+	// line: {label, data, borderColor, fill, spanGaps}
 	// data: {x,y}
 	let dataset = [];
-	players.forEach((p,i)=>{
-		// convert name to color
-		let rgb = HSVtoRGB(i/players.length, 1, 1);
+	// Each player gets a line
+	players.forEach((player,index)=>{
+		// convert name to color, using index as hue. Max saturation and brightness.
+		let rgb = HSVtoRGB(index/players.length, 1, 1);
 		let color = "#";
 		color = color + rgb.r.toString(16).padStart(2, '0');
 		color = color + rgb.g.toString(16).padStart(2, '0');
 		color = color + rgb.b.toString(16).padStart(2, '0');
-		// create a new dataset
+		// create a new "dataset" (line)
 		dataset.push({
-			label: p,
+			label: player,
 			data: [],
 			borderColor: color,
 			fill: false,
 			spanGaps: true
 		});
 	});
-	// Iterate over scores, add point to correct place.
-	database.forEach(score=>{
-		// where to put this
-		let dataArray = dataset.find(l=>l.label===score.player).data;
-		// x-value
-		let x = games.findIndex(g=>g.date===score.date&&g.game===score.game);
+	// Each record in the data becomes a point on a line
+	database.forEach(record=>{
+		// Determine which line to put this on (player name)
+		let dataArray = dataset.find(l=>l.label===record.player).data;
+		// x-value: The index of the game
+		let x = games.findIndex(g=>g.date===record.displayDate&&g.game===record.game);
 		// put!
 		dataArray.push({
 			x,
-			y: score.score
+			y: record.score
 		});
 	})
 	// now get it on the page, yo.
@@ -147,6 +161,10 @@ const makeGraph = (players, games, database)=>{
 
 // Put some shit in a table
 const putTable = (tableID, data) => {
+	if(data.length===0){
+		console.log('No data for table '+tableID);
+		return;
+	}
 	let tableBody = document.getElementById(tableID);
 	// use keys to append header row
 	let headerRow = document.createElement('tr');
@@ -170,41 +188,38 @@ const putTable = (tableID, data) => {
 // Get the leaderboard table up there.
 const makeLeaderboardTable = (players, database)=>{
 	let rows = [];
-	// we need this
+	// we need this to calculate two-week averages
 	let twoWeeksAgo = new Date();
 	twoWeeksAgo.setDate(twoWeeksAgo.getDate()-14);
 	console.log('Calculating twk avgs from '+twoWeeksAgo.toLocaleString());
-	// part 1: assemble stats
+	// part 1: assemble stats by player
 	players.forEach(player=>{
 		let row = {};
 		row.name = player;
 		let playerScores = database.filter(s=>s.player===player);
-		let twoWeekScores = playerScores.filter(s=>new Date(s.date)>=twoWeeksAgo);
+		let twoWeekScores = playerScores.filter(s=>s.date>=twoWeeksAgo).map(s=>s.score);
+		playerScores = playerScores.map(s=>s.score);
 		if(twoWeekScores.length===0){
+			console.log('No two-week scores for '+player);
 			return; // exclude from leaderboard
+		}else{
+			console.log('Found '+twoWeekScores.length+' scores for '+player);
 		}
 		// 2wk avg
-		row.avg2wk = twoWeekScores
-			.map(s=>s.score)
-			.reduce((a,i, _, s)=>a+i/s.length, 0);
+		row.avg2wk = twoWeekScores.reduce((a,i, _, s)=>a+i/s.length, 0);
 		// all time avg
-		row.avgAll = playerScores
-			.map(s=>s.score)
-			.reduce((a,i, _, s)=>a+=i/s.length, 0);
+		row.avgAll = playerScores.reduce((a,i, _, s)=>a+=i/s.length, 0);
 		// max
-		row.max = playerScores
-			.map(s=>s.score)
-			.reduce((a,i)=>a>i?a:i, 0);
+		row.max = playerScores.reduce((a,i)=>a>i?a:i, 0);
 		// min
-		row.min = playerScores
-			.map(s=>s.score)
-			.reduce((a,i)=>a<i?a:i, 300);
+		row.min = playerScores.reduce((a,i)=>a<i?a:i, 300);
 		rows.push(row);
 	});
-	// sort by 2wk and add rank
+	// sort rows by 2wk avg
 	rows.sort((r1,r2)=>{
 		return r2.avg2wk-r1.avg2wk;
 	});
+	// Add rank
 	rows.forEach((r,i)=>r.rank=i+1);
 	// part 2: sort keys for display
 	rows = rows.map(row=>{
@@ -228,16 +243,53 @@ const makeLeaderboardTable = (players, database)=>{
 	putTable('leaderboard',rows);
 };
 
+// Takes a DATE object, and returns a nice string.
+function dateToISOLikeButLocal(date, length) {
+    const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+    const msLocal =  date.getTime() - offsetMs;
+    const dateLocal = new Date(msLocal);
+    const iso = dateLocal.toISOString();
+    const isoLocal = iso.slice(0, length);
+    return isoLocal;
+}
+
 // x-axis map, idk if anyone cares about this but like why not
 let makeXMap = (games) => {
 	let data = games.map((g,i)=>{
 		return {
 			Index: i,
-			Date: g.date,
+			Date: dateToISOLikeButLocal(new Date(g.date), 10),
 			Game: g.game
 		};
 	});
 	putTable('xmaptable',data);
+};
+
+const unpack = (db)=>{
+	// Make sure the DB we acquired is an array
+	if(!Array.isArray(db)){
+		throw 'Acquired database is not an array.';
+	}
+	// Make sure that each record (r) has the required components
+	db.forEach((r,i)=>{
+		if(!r.date){
+			throw 'DB record '+i+' does not have a date'
+		}
+		if(!r.game){
+			throw 'DB record '+i+' does not have a game number'
+		}
+		if(!r.player){
+			throw 'DB record '+i+' does not have a player'
+		}
+		if(!r.score){
+			throw 'DB record '+i+' does not have a score'
+		}
+		// convert date
+		r.date = new Date(r.date);
+		// setup displayDate
+		r.displayDate = dateToISOLikeButLocal(r.date, 10);
+	});
+	return db;
 };
 
 // ----- main, yo. -----
@@ -245,12 +297,22 @@ let makeXMap = (games) => {
 // kickoff this shitshow
 const main = async () => {
 	let database = await getDatabase();
+	database = unpack(database);
 	let games = calcGamesList(database);
 	games = sortGamesList(games);
+	console.log('Games');
+	console.log(games);
 	let players = getPlayersList(database);
+	console.log('Players');
+	console.log(players);
 	makeGraph(players, games, database);
 	// get the database on the page
-	putTable('datatable', database);
+	putTable('datatable', database.map(r=>({
+		Date: dateToISOLikeButLocal(r.date, 16).replace('T', ' '),
+		Game: r.game,
+		Player: r.player,
+		Score: r.score
+	})));
 	// Let's get that leaderboard table in there
 	makeLeaderboardTable(players, database);
 	// x axis map is last i guess

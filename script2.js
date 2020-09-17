@@ -3,7 +3,8 @@
 // ----- Constants -----
 
 // where to download the json from
-const databaseUrl = 'https://api.myjson.com/bins/7n5cw';
+// const databaseUrl = 'https://api.myjson.com/bins/7n5cw';
+const databaseUrl = 'https://jsonstorage.net/api/items/c6292139-209e-4b0c-93ad-51d40deec1b2';
 
 // where to build the graph
 const canvasID = 'myChart';

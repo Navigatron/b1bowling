@@ -14,6 +14,9 @@ const canvasID = 'myChart';
 // where we shall store the chart
 let myChart;
 
+// Only show data after this x-value
+let chartMin = 0;
+
 // ----- functions -----
 
 // Get the json database from the database URL
@@ -153,7 +156,10 @@ const makeGraph = (players, games, database)=>{
 		options:{
 			scales: {
 				xAxes: [{
-					type: 'linear'
+					type: 'linear',
+					ticks: {
+						min: chartMin,
+					},
 				}]
 			}
 		}
@@ -307,6 +313,14 @@ const main = async () => {
 	console.log('Players');
 	console.log(players);
 	makeGraph(players, games, database);
+
+	const slider = document.querySelector('#minSlider');
+	slider.addEventListener('input', ()=>{
+		console.log('Click!');
+		myChart.options.scales.xAxes[0].ticks.min = +slider.value;
+		myChart.update();
+	});
+
 	// get the database on the page
 	putTable('datatable', database.map(r=>({
 		Date: dateToISOLikeButLocal(r.date, 16).replace('T', ' '),

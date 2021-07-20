@@ -5,6 +5,7 @@ import * as database from './database.js';
 
 const leaderboardTarget = 'leaderboard-container';
 const graphTarget = 'graph-container';
+const consistentTarget = 'consistent-container';
 
 const state = {
     leaderboardTarget: undefined,
@@ -16,6 +17,34 @@ const state = {
 };
 
 // Render
+
+async function renderConsistent(){
+    let playerStats = await database.getStats();
+
+    playerStats = playerStats
+        .filter(r=>r.avg2wk!==0)
+        .sort((a,b)=>a.stdDev2wk-b.stdDev2wk);
+
+    let table = html`
+        <table class="table is-striped unfuck">
+            <thead>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>StdDev(2wk)</th>
+            </thead>
+            <tbody>
+                ${playerStats.map((data, index)=>html`
+                    <tr>
+                        <td>${index+1}</td>
+                        <td>${data.player}</td>
+                        <td>${data.stdDev2wk.toFixed(2)}</td>
+                    </tr>
+                `)}
+            </tbody>
+        </table>
+    `;
+    litRender(table, state.consistentTarget);
+}
 
 async function renderLeaderboard(){
     let playerStats = await database.getStats();
@@ -197,10 +226,12 @@ async function initGraph(){
 document.addEventListener('DOMContentLoaded', ()=>{
     state.leaderboardTarget = document.querySelector(`#${leaderboardTarget}`);
     state.graphTarget = document.querySelector(`#${graphTarget}`);
+    state.consistentTarget = document.querySelector(`#${consistentTarget}`);
 
     initGraph().then(renderGraph).then(drawTheChart);
 
     renderLeaderboard();
+    renderConsistent();
 })
 
 /* accepts parameters

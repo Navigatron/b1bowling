@@ -255,7 +255,7 @@ async function drawGamexChart(){
         tension: 0.1,
     });
 
-    state.chart = new Chart('gamexChart', {
+    state.gamexChart = new Chart('gamexChart', {
         type: 'line',
         data: {
             datasets

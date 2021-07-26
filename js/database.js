@@ -111,7 +111,9 @@ function calculateStats([data, players]){
         // More? Deltas between games. This one is complex.
         const deltaLines = [];
         let deltaT = [];
-        sixMonthData.forEach(row=>{
+        sixMonthData.sort((a,b)=>{
+            return a.gameStamp - b.gameStamp;
+        }).forEach(row=>{
             if(row.game===1 && deltaT.length!==0){
                 deltaLines.push(deltaT);
                 deltaT = [];
@@ -121,11 +123,7 @@ function calculateStats([data, players]){
         deltaLines.push(deltaT);
         deltaLines.forEach(sequence=>{
             for(let i=sequence.length-1; i>=0; i--){
-                if(i!==0){
-                    sequence[i]-=sequence[i-1];
-                }else{
-                    sequence[0]=0;
-                }
+                sequence[i]-=sequence[0];
             }
         });
         playerStats.gamexStories = deltaLines;

@@ -145,7 +145,7 @@ async function drawTheChart(){
 
     // filter by selected time range
     data = data.filter(row=>{
-        let d = new Date(row.date);
+        let d = new Date(new Date(row.date).toLocaleDateString('en-US', {timezone: 'America/New_York'}));
         return d >= new Date(state.graph.start) &&
             d <= new Date(state.graph.end);
     }).sort((a,b)=>a.gameStamp-b.gameStamp);

@@ -73,10 +73,11 @@ async function renderLeaderboard(){
                         <td>${data.avg26wk.toFixed(2)}</td>
                         <td>
                             ${(()=>{
-                                let score = Math.abs(data.avg2wk-data.avg26wk).toFixed(2)
-                                return score >= 0
-                                    ? "+ "+score
-                                    : "- "+score
+                                let delta = data.avg2wk-data.avg26wk;
+                                let display = Math.abs(delta).toFixed(2)
+                                return delta >= 0
+                                    ? "+ "+display
+                                    : "- "+display
                             })()}
                         </td>
                         <td>${data.max}</td>

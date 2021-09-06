@@ -91,8 +91,9 @@ async function statsPage(){
                         <td><b>Delta from 6mo avg</b></td>
                         <td>
                             ${(()=>{
-                                let score = Math.abs(pstats.avg2wk-pstats.avg26wk)
-                                return score >= 0
+                                let delta = pstats.avg2wk-pstats.avg26wk;
+                                let score = Math.abs(delta);
+                                return delta >= 0
                                     ? "+ "+score.toFixed(2)
                                     : "- "+score.toFixed(2)
                             })()}
@@ -102,8 +103,9 @@ async function statsPage(){
                         <td><b>Delta from all-time avg</b></td>
                         <td>
                             ${(()=>{
-                                let score = Math.abs(pstats.avg2wk-pstats.avgAll)
-                                return score >= 0
+                                let delta = pstats.avg2wk-pstats.avgAll;
+                                let score = Math.abs(delta);
+                                return delta >= 0
                                     ? "+ "+score.toFixed(2)
                                     : "- "+score.toFixed(2)
                             })()}
@@ -139,8 +141,9 @@ async function statsPage(){
                         <td><b>Delta from all-time avg</b></td>
                         <td>
                             ${(()=>{
-                                let score = Math.abs(pstats.avg26wk-pstats.avgAll)
-                                return score >= 0
+                                let delta = pstats.avg26wk-pstats.avgAll;
+                                let score = Math.abs(delta);
+                                return delta >= 0
                                     ? "+ "+score.toFixed(2)
                                     : "- "+score.toFixed(2)
                             })()}

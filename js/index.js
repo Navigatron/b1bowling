@@ -1,4 +1,4 @@
-import {html, render as litRender} from 'https://unpkg.com/lit-html?module';
+import {html, render as litRender} from 'https://unpkg.com/lit-html@1.4.1?module';
 import * as database from './database.js';
 
 // State

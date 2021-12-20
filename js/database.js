@@ -10,7 +10,8 @@
 
 // state
 
-const dataURL = 'https://jsonstorage.net/api/items/c6292139-209e-4b0c-93ad-51d40deec1b2';
+// const dataURL = 'https://jsonstorage.net/api/items/c6292139-209e-4b0c-93ad-51d40deec1b2';
+const dataURL = 'https://api.npoint.io/871f8c681ddac5b04837';
 
 let myDataPromise = loadData();
 let players = myDataPromise.then(data=>{
